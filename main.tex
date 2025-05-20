@@ -1,0 +1,66 @@
+\documentclass[14pt]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[T1, T2A]{fontenc}
+% \usepackage{fontspec}
+% \setmainfont{Times New Roman}
+\usepackage[english, russian]{babel}
+\usepackage[a4paper,left=3cm,right=1.5cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{changepage}
+\usepackage{indentfirst}
+\usepackage[intlimits]{amsmath}
+\usepackage{amssymb}
+\usepackage[titles]{tocloft}
+\usepackage{titlesec}
+\usepackage{rmathbr}
+\usepackage{float}
+\usepackage{relsize}
+\usepackage{setspace}
+\usepackage{anyfontsize}
+\usepackage{minted}
+\usepackage{enumitem}
+
+\setcounter{secnumdepth}{0}
+\setlist{nosep}
+\titleformat{\section}{\large\bfseries\filcenter}{}{1em}{}
+
+
+\newcommand{\Rb}{\mathbb{R}}
+\newcommand*{\hm}[1]{#1\nobreak\discretionary{}{\hbox{$\mathsurround=0pt #1$}}{}}
+\newcommand{\sectionbreak}{\clearpage}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\pvec}{p_{\boldsymbol{\xi}}}
+\addto\captionsrussian{\renewcommand{\refname}{Список использованной литературы}}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\relpenalty=10000
+\binoppenalty=10000
+
+\graphicspath{{./images/}}
+
+
+\begin{document}
+
+    \include{sections/title}
+
+    \tableofcontents
+
+    \include{sections/begin}
+
+    \include{sections/math_model}
+
+    \include{sections/experiments}
+
+    \include{sections/ignore}
+
+    \include{sections/max_prob}
+
+    \include{sections/moments}
+
+    \include{sections/end}
+
+    % \include{sections/booklist}
+
+    % \include{sections/code}
+
+\end{document}

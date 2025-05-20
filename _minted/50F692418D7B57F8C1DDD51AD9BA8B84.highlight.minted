@@ -1,0 +1,111 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{from} \PYG{n+nn}{scipy}\PYG{n+nn}{.}\PYG{n+nn}{stats} \PYG{k+kn}{import} \PYG{n}{norm}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot} \PYG{k}{as} \PYG{n+nn}{plt}
+\PYG{k+kn}{import} \PYG{n+nn}{random} \PYG{k}{as} \PYG{n+nn}{random}
+
+\PYG{k}{def} \PYG{n+nf}{omit\PYGZus{}rand}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,} \PYG{n}{prob}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{temp} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{empty}\PYG{p}{(}\PYG{n}{data}\PYG{o}{.}\PYG{n}{size}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{data}\PYG{o}{.}\PYG{n}{size}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{temp}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{=} \PYG{n}{data}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}
+        \PYG{n}{rand} \PYG{o}{=} \PYG{n}{random}\PYG{o}{.}\PYG{n}{random}\PYG{p}{(}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{rand} \PYG{o}{\PYGZlt{}} \PYG{n}{prob}\PYG{p}{:}
+            \PYG{n}{temp}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{nan}
+    \PYG{k}{return} \PYG{n}{temp}
+
+\PYG{k}{def} \PYG{n+nf}{omit\PYGZus{}cens}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,} \PYG{n}{border}\PYG{p}{,} \PYG{n}{prob}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{temp} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{empty}\PYG{p}{(}\PYG{n}{data}\PYG{o}{.}\PYG{n}{size}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{data}\PYG{o}{.}\PYG{n}{size}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{temp}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{=} \PYG{n}{data}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}
+        \PYG{n}{rand} \PYG{o}{=} \PYG{n}{random}\PYG{o}{.}\PYG{n}{random}\PYG{p}{(}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{data}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{\PYGZgt{}} \PYG{n}{border} \PYG{o+ow}{and} \PYG{n}{rand} \PYG{o}{\PYGZlt{}} \PYG{n}{prob}\PYG{p}{:}
+            \PYG{n}{temp}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{nan}
+    \PYG{k}{return} \PYG{n}{temp}
+
+\PYG{k}{def} \PYG{n+nf}{eval\PYGZus{}params\PYGZus{}avg}\PYG{p}{(}\PYG{n}{data}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{temp} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{empty}\PYG{p}{(}\PYG{n}{data}\PYG{o}{.}\PYG{n}{size} \PYG{o}{\PYGZhy{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{count\PYGZus{}nonzero}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{isnan}\PYG{p}{(}\PYG{n}{data}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{k}{for} \PYG{n}{num} \PYG{o+ow}{in} \PYG{n}{data}\PYG{p}{:}
+        \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{np}\PYG{o}{.}\PYG{n}{isnan}\PYG{p}{(}\PYG{n}{num}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{temp}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{=} \PYG{n}{num}
+            \PYG{n}{i} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+
+    \PYG{n+nb}{sum} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{k}{for} \PYG{n}{num} \PYG{o+ow}{in} \PYG{n}{temp}\PYG{p}{:}
+        \PYG{n+nb}{sum} \PYG{o}{+}\PYG{o}{=} \PYG{n}{num}
+    \PYG{n}{avg} \PYG{o}{=} \PYG{n+nb}{sum} \PYG{o}{/} \PYG{n}{temp}\PYG{o}{.}\PYG{n}{size}
+    \PYG{k}{return} \PYG{n}{avg}
+
+\PYG{k}{def} \PYG{n+nf}{calc\PYGZus{}loc\PYGZus{}err}\PYG{p}{(}\PYG{n}{msize}\PYG{p}{,} \PYG{n}{mloc}\PYG{p}{,} \PYG{n}{mscale}\PYG{p}{,} \PYG{n}{mborder}\PYG{p}{,} \PYG{n}{mprob}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{err\PYGZus{}sum} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{n}{am} \PYG{o}{=} \PYG{l+m+mi}{500}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{am}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{data} \PYG{o}{=} \PYG{n}{norm}\PYG{o}{.}\PYG{n}{rvs}\PYG{p}{(}\PYG{n}{size}\PYG{o}{=}\PYG{n}{msize}\PYG{p}{,} \PYG{n}{loc}\PYG{o}{=}\PYG{n}{mloc}\PYG{p}{,} \PYG{n}{scale}\PYG{o}{=}\PYG{n}{mscale}\PYG{p}{)}
+        \PYG{n}{data} \PYG{o}{=} \PYG{n}{omit\PYGZus{}cens}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,} \PYG{n}{mborder}\PYG{p}{,} \PYG{n}{mprob}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}sum} \PYG{o}{+}\PYG{o}{=} \PYG{p}{(}\PYG{n}{eval\PYGZus{}params\PYGZus{}avg}\PYG{p}{(}\PYG{n}{data}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{mloc}\PYG{p}{)}\PYG{o}{*}\PYG{o}{*}\PYG{l+m+mi}{2}
+    \PYG{n}{err\PYGZus{}sum} \PYG{o}{/}\PYG{o}{=} \PYG{n}{am}
+    \PYG{k}{return} \PYG{n}{err\PYGZus{}sum}
+
+
+\PYG{k}{def} \PYG{n+nf}{calc\PYGZus{}loc\PYGZus{}err\PYGZus{}rnd}\PYG{p}{(}\PYG{n}{msize}\PYG{p}{,} \PYG{n}{mloc}\PYG{p}{,} \PYG{n}{mscale}\PYG{p}{,} \PYG{n}{mprob}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{err\PYGZus{}sum} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{n}{am} \PYG{o}{=} \PYG{l+m+mi}{500}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{am}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{data} \PYG{o}{=} \PYG{n}{norm}\PYG{o}{.}\PYG{n}{rvs}\PYG{p}{(}\PYG{n}{size}\PYG{o}{=}\PYG{n}{msize}\PYG{p}{,} \PYG{n}{loc}\PYG{o}{=}\PYG{n}{mloc}\PYG{p}{,} \PYG{n}{scale}\PYG{o}{=}\PYG{n}{mscale}\PYG{p}{)}
+        \PYG{n}{data} \PYG{o}{=} \PYG{n}{omit\PYGZus{}rand}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,} \PYG{n}{mprob}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}sum} \PYG{o}{+}\PYG{o}{=} \PYG{p}{(}\PYG{n}{eval\PYGZus{}params\PYGZus{}avg}\PYG{p}{(}\PYG{n}{data}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{mloc}\PYG{p}{)}\PYG{o}{*}\PYG{o}{*}\PYG{l+m+mi}{2}
+    \PYG{n}{err\PYGZus{}sum} \PYG{o}{/}\PYG{o}{=} \PYG{n}{am}
+    \PYG{k}{return} \PYG{n}{err\PYGZus{}sum}
+
+\PYG{k}{def} \PYG{n+nf}{calc\PYGZus{}loc\PYGZus{}err\PYGZus{}no}\PYG{p}{(}\PYG{n}{msize}\PYG{p}{,} \PYG{n}{mloc}\PYG{p}{,} \PYG{n}{mscale}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{err\PYGZus{}sum} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{n}{am} \PYG{o}{=} \PYG{l+m+mi}{500}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{am}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{data} \PYG{o}{=} \PYG{n}{norm}\PYG{o}{.}\PYG{n}{rvs}\PYG{p}{(}\PYG{n}{size}\PYG{o}{=}\PYG{n}{msize}\PYG{p}{,} \PYG{n}{loc}\PYG{o}{=}\PYG{n}{mloc}\PYG{p}{,} \PYG{n}{scale}\PYG{o}{=}\PYG{n}{mscale}\PYG{p}{)}
+        \PYG{n}{err\PYGZus{}sum} \PYG{o}{+}\PYG{o}{=} \PYG{p}{(}\PYG{n}{eval\PYGZus{}params\PYGZus{}avg}\PYG{p}{(}\PYG{n}{data}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{mloc}\PYG{p}{)}\PYG{o}{*}\PYG{o}{*}\PYG{l+m+mi}{2}
+    \PYG{n}{err\PYGZus{}sum} \PYG{o}{/}\PYG{o}{=} \PYG{n}{am}
+    \PYG{k}{return} \PYG{n}{err\PYGZus{}sum}
+
+\PYG{k}{def} \PYG{n+nf}{calc\PYGZus{}loc}\PYG{p}{(}\PYG{n}{msize}\PYG{p}{,} \PYG{n}{mloc}\PYG{p}{,} \PYG{n}{mscale}\PYG{p}{,} \PYG{n}{mborder}\PYG{p}{,} \PYG{n}{mprob}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{sum} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{n}{am} \PYG{o}{=} \PYG{l+m+mi}{500}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{am}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{data} \PYG{o}{=} \PYG{n}{norm}\PYG{o}{.}\PYG{n}{rvs}\PYG{p}{(}\PYG{n}{size}\PYG{o}{=}\PYG{n}{msize}\PYG{p}{,} \PYG{n}{loc}\PYG{o}{=}\PYG{n}{mloc}\PYG{p}{,} \PYG{n}{scale}\PYG{o}{=}\PYG{n}{mscale}\PYG{p}{)}
+        \PYG{n}{data} \PYG{o}{=} \PYG{n}{omit\PYGZus{}cens}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,} \PYG{n}{mborder}\PYG{p}{,} \PYG{n}{mprob}\PYG{p}{)}
+        \PYG{n+nb}{sum} \PYG{o}{+}\PYG{o}{=} \PYG{n}{eval\PYGZus{}params\PYGZus{}avg}\PYG{p}{(}\PYG{n}{data}\PYG{p}{)}
+    \PYG{n+nb}{sum} \PYG{o}{/}\PYG{o}{=} \PYG{n}{am}
+    \PYG{k}{return} \PYG{n+nb}{sum}
+
+\PYG{k}{def} \PYG{n+nf}{calc\PYGZus{}loc\PYGZus{}rnd}\PYG{p}{(}\PYG{n}{msize}\PYG{p}{,} \PYG{n}{mloc}\PYG{p}{,} \PYG{n}{mscale}\PYG{p}{,} \PYG{n}{mprob}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{sum} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{n}{am} \PYG{o}{=} \PYG{l+m+mi}{500}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{am}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{data} \PYG{o}{=} \PYG{n}{norm}\PYG{o}{.}\PYG{n}{rvs}\PYG{p}{(}\PYG{n}{size}\PYG{o}{=}\PYG{n}{msize}\PYG{p}{,} \PYG{n}{loc}\PYG{o}{=}\PYG{n}{mloc}\PYG{p}{,} \PYG{n}{scale}\PYG{o}{=}\PYG{n}{mscale}\PYG{p}{)}
+        \PYG{n}{data} \PYG{o}{=} \PYG{n}{omit\PYGZus{}rand}\PYG{p}{(}\PYG{n}{data}\PYG{p}{,} \PYG{n}{mprob}\PYG{p}{)}
+        \PYG{n+nb}{sum} \PYG{o}{+}\PYG{o}{=} \PYG{n}{eval\PYGZus{}params\PYGZus{}avg}\PYG{p}{(}\PYG{n}{data}\PYG{p}{)}
+    \PYG{n+nb}{sum} \PYG{o}{/}\PYG{o}{=} \PYG{n}{am}
+    \PYG{k}{return} \PYG{n+nb}{sum}
+
+
+\PYG{n}{fig}\PYG{p}{,} \PYG{n}{ax} \PYG{o}{=} \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplots}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}
+
+\PYG{n}{ax}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x4}\PYG{p}{,} \PYG{n}{y4}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{b\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{lw}\PYG{o}{=}\PYG{l+m+mf}{1.2}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.6}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{со случ. пропусками}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{r\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{lw}\PYG{o}{=}\PYG{l+m+mf}{1.2}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.6}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{ценз. 1.5}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x2}\PYG{p}{,} \PYG{n}{y2}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{g\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{lw}\PYG{o}{=}\PYG{l+m+mf}{1.2}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.6}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{без пропусков}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x7}\PYG{p}{,} \PYG{n}{y7}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{y\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{lw}\PYG{o}{=}\PYG{l+m+mf}{1.2}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.6}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{ценз. 1.5 с вер. 0.5}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Вариация оценки}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{n}{fontsize}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{small}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{n}{fig}\PYG{p}{,} \PYG{n}{ax} \PYG{o}{=} \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplots}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}
+\PYG{n}{ax}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x6}\PYG{p}{,} \PYG{n}{y6}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{b\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{lw}\PYG{o}{=}\PYG{l+m+mf}{1.2}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.6}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{со случ. пропусками}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x1}\PYG{p}{,} \PYG{n}{y1}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{r\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{lw}\PYG{o}{=}\PYG{l+m+mf}{1.2}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.6}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{ценз. 1.5}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x5}\PYG{p}{,} \PYG{n}{y5}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{g\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{lw}\PYG{o}{=}\PYG{l+m+mf}{1.2}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.6}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{без пропусков}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{ax}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x3}\PYG{p}{,} \PYG{n}{y3}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{y\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{lw}\PYG{o}{=}\PYG{l+m+mf}{1.2}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.6}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{ценз. 1.5 с вер. 0.5}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Оценка параметра}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{n}{fontsize}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{small}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{loc}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mf}{0.65}\PYG{p}{,}\PYG{l+m+mf}{0.2}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+
+\end{MintedVerbatim}

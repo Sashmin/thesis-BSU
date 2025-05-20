@@ -1,0 +1,112 @@
+\section{Приложение А. Листинг программы}
+        \begin{minted}[autogobble]{python}
+            import numpy as np
+            from scipy.stats import norm
+            import matplotlib.pyplot as plt
+            import random as random
+
+            def omit_rand(data, prob):
+                temp = np.empty(data.size)
+                for i in range(data.size):
+                    temp[i] = data[i]
+                    rand = random.random()
+                    if rand < prob:
+                        temp[i] = np.nan
+                return temp
+
+            def omit_cens(data, border, prob):
+                temp = np.empty(data.size)
+                for i in range(data.size):
+                    temp[i] = data[i]
+                    rand = random.random()
+                    if data[i] > border and rand < prob:
+                        temp[i] = np.nan
+                return temp
+
+            def eval_params_avg(data):
+                temp = np.empty(data.size - np.count_nonzero(np.isnan(data)))
+                i = 0
+                for num in data:
+                    if not np.isnan(num):
+                        temp[i] = num
+                        i += 1
+
+                sum = 0
+                for num in temp:
+                    sum += num
+                avg = sum / temp.size
+                return avg
+
+            def calc_loc_err(msize, mloc, mscale, mborder, mprob):
+                err_sum = 0
+                am = 500
+                for i in range(am):
+                    data = norm.rvs(size=msize, loc=mloc, scale=mscale)
+                    data = omit_cens(data, mborder, mprob)
+                    err_sum += (eval_params_avg(data) - mloc)**2
+                err_sum /= am
+                return err_sum
+
+
+            def calc_loc_err_rnd(msize, mloc, mscale, mprob):
+                err_sum = 0
+                am = 500
+                for i in range(am):
+                    data = norm.rvs(size=msize, loc=mloc, scale=mscale)
+                    data = omit_rand(data, mprob)
+                    err_sum += (eval_params_avg(data) - mloc)**2
+                err_sum /= am
+                return err_sum
+
+            def calc_loc_err_no(msize, mloc, mscale):
+                err_sum = 0
+                am = 500
+                for i in range(am):
+                    data = norm.rvs(size=msize, loc=mloc, scale=mscale)
+                    err_sum += (eval_params_avg(data) - mloc)**2
+                err_sum /= am
+                return err_sum
+
+            def calc_loc(msize, mloc, mscale, mborder, mprob):
+                sum = 0
+                am = 500
+                for i in range(am):
+                    data = norm.rvs(size=msize, loc=mloc, scale=mscale)
+                    data = omit_cens(data, mborder, mprob)
+                    sum += eval_params_avg(data)
+                sum /= am
+                return sum
+
+            def calc_loc_rnd(msize, mloc, mscale, mprob):
+                sum = 0
+                am = 500
+                for i in range(am):
+                    data = norm.rvs(size=msize, loc=mloc, scale=mscale)
+                    data = omit_rand(data, mprob)
+                    sum += eval_params_avg(data)
+                sum /= am
+                return sum
+
+
+            fig, ax = plt.subplots(1, 1)
+
+            ax.plot(x4, y4, 'b-', lw=1.2, alpha=0.6, label='со случ. пропусками')
+            ax.plot(x, y, 'r-', lw=1.2, alpha=0.6, label='ценз. 1.5')
+            ax.plot(x2, y2, 'g-', lw=1.2, alpha=0.6, label='без пропусков')
+            ax.plot(x7, y7, 'y-', lw=1.2, alpha=0.6, label='ценз. 1.5 с вер. 0.5')
+
+            plt.title('Вариация оценки')
+            plt.legend(fontsize='small')
+            plt.show()
+
+            fig, ax = plt.subplots(1, 1)
+            ax.plot(x6, y6, 'b-', lw=1.2, alpha=0.6, label='со случ. пропусками')
+            ax.plot(x1, y1, 'r-', lw=1.2, alpha=0.6, label='ценз. 1.5')
+            ax.plot(x5, y5, 'g-', lw=1.2, alpha=0.6, label='без пропусков')
+            ax.plot(x3, y3, 'y-', lw=1.2, alpha=0.6, label='ценз. 1.5 с вер. 0.5')
+
+            plt.title('Оценка параметра')
+            plt.legend(fontsize='small', loc=(0.65,0.2))
+            plt.show()
+
+        \end{minted}

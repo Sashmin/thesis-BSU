@@ -1,0 +1,117 @@
+\section{Метод максимального правдоподобия}
+
+    Теперь попробуем применить метод максимального правдоподобия и посмотрим, насколько он усложняется в случае пропусков, 
+    зависящих от данных.  
+    
+    Пусть дана выборка размера $n$ значений с пропусками случайной величины с плотностью вероятности $p_\xi(x,\theta)$, где  
+    $\theta$ --- неизвестный параметр. И пусть модель пропусков описывается функцией $m(x)$, $Obs$ --- шаблон пропусков данной выборки, 
+    $k$ --- число наблюдаемых значений выборки. Тогда функция правдоподобия (ФП) будет выглядеть следующим образом:
+    \begin{equation*}
+        L(\theta) = \prod_{i=1}^{n}(p_\xi(x,\theta))^{obs_i}G(p_\xi, m)^{1-obs_i},
+    \end{equation*}
+    где $G(p_\xi, m) = \int_{-\infty}^{+\infty}p_\xi(x, \theta)m(x)\dd x$.
+    Логарифмическая ФП (ЛФП) будет иметь вид
+    \begin{align*}
+        l(\theta) = ln(L(\theta)) &= \sum_{i=1}^{n}obs_i \ln(p_\xi(x_i,\theta)) + (1 - obs_i)\ln(G(p_\xi,m)) = \\
+                                  &= \sum_{i=1}^{n}obs_i\ln(p_\xi(x_i,\theta)) + (n-k)\ln(G(p_\xi,m)),
+    \end{align*}
+    где $n$ --- величина выборки, $k$ --- количество наблюдаемых значений.
+
+    Рассмотрим три случая пропусков
+    \paragraph{1. Случайные пропуски.} Рассматриваем $m(x) \equiv c,\ 0 < c < 1$ и получаем функцию $G$ и ЛФП:
+    \begin{gather*}
+        G(p_\xi, m) = \int_{-\infty}^{+\infty}cp_\xi(x,\theta)\dd x = c, \\
+        l(\theta) = \sum_{i=1}^{n}obs_i\ln\big(p_\xi(x_i,\theta)\big) + (n-k)\ln c.
+    \end{gather*}
+    При случайных пропусках $G(\cdot)$ не зависит от $\theta$ и второе слагаемое никак не влияет на поиск
+    максимума функции, поэтому в этом случае получение ММП-оценки никак не отличается от случая без
+    пропусков.
+
+    \paragraph{2. Цензурирование.} Рассмотрим функцию $m(x)$ вида
+    \begin{equation*}
+        m(x) = \begin{cases}
+            0, & x < c \\
+            1, & x \ge c
+        \end{cases}.
+    \end{equation*}
+    Тогда
+    \begin{gather*}
+        G(p_\xi, m) = \int_{c}^{+\infty}p_\xi(x, \theta)\dd x, \\
+        l(\theta) = \sum_{i=1}^{n}obs_i\ln\big(p_\xi(x_i,\theta)\big) + (n-k)\ln\big(G(p_\xi, m)\big).
+    \end{gather*}
+    Теперь функция $G(\cdot)$ зависит от $\theta$, что усложняет нахождение максимума функции.
+
+    \paragraph{3. Кусочно-постоянная функция пропусков.} Для примера рассмотрим
+    \begin{equation*}
+        m(x) = \begin{cases}
+            0, & x < a \\
+            \frac12, & a \le x < b \\
+            1, & x \ge b
+        \end{cases}.
+    \end{equation*}
+    Тогда получаем ситуацию, аналогичную случаю 2:
+    \begin{gather*}
+        G(p_\xi, m) = \frac12\int_{a}^{b}p_\xi(x, \theta)\dd x + \int_{b}^{+\infty}p_\xi(x, \theta)\dd x, \\
+        l(\theta) = \sum_{i=1}^{n}obs_i\ln\big(p_\xi(x_i,\theta)\big) + (n-k)\ln\big(G(p_\xi, m)\big).
+    \end{gather*}
+    Теперь рассмотрим 2 конкретных примера:
+
+    \vspace{0.2cm}
+    1. Возьмем экспоненциальное распределение
+    \begin{equation*}
+        p(x, \theta) = \left\{\
+            \begin{array}{ll}
+                \theta e^{-\theta x}, & x \geq 0 \\
+                0, & x < 0
+            \end{array}\right., \quad \theta > 0
+    \end{equation*} 
+    и модель пропусков
+    \begin{equation*}
+        m(x) = \left\{\
+            \begin{array}{ll}
+                0, & x < 0 \\
+                \frac12, & 0 \leq x \leq 3 \\
+                0, & x > 3
+            \end{array}\right. .
+    \end{equation*}
+    Тогда
+    \begin{equation*}
+        G(p, m) = \int_{0}^{3}\frac{\theta}{2}e^{-\theta x}\dd x = \frac12 (1 - e^{-3\theta})
+    \end{equation*}
+    и
+    \begin{equation*}
+        L(\theta) = \theta^k e^{-\theta\sum_{obs_i = 1}}\frac{1}{2^{n-k}}(1 - e^{-3\theta})^{n - k}.
+    \end{equation*}
+
+    Прологарифмируем функцию правдоподобия и вычислим производную для поиска точки максимума
+    \begin{equation*}
+        l(\theta) = \ln L(\theta) = k\ln\theta - \theta\sum_{obs_i = 1}x_i + (n - k)\ln\left(\frac12(1 - e^{-3\theta})\right),
+    \end{equation*}
+    \begin{equation*}
+        l'(\theta) = \frac{k}{\theta} - \sum_{obs_i = 1}x_i + 3(n - k)\left(\frac{1}{1 - e^{-3\theta}} - 1\right).
+    \end{equation*}
+
+    Перенесем все слагаемые с $\theta$ влево и получим уравнение для нахождения МП-оценки параметра
+    \begin{equation*}
+        \frac{k}{\theta} + \frac{1}{1 - e^{-3\theta}} = \sum_{obs_i = 1}x_i - 3(n - k).
+    \end{equation*}
+
+    Уравнение уже слишком сложное для аналитического решения, параметр можно оценить только численными методами, приближенно. 
+
+    \vspace{0.2cm}
+    2. Возьмем нормальное распределение
+    \begin{equation*}
+        p(x, \theta) = \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-a)^2}{2\sigma^2}}
+    \end{equation*}
+    и ту же модель пропусков, что и в прошлом примере. Тогда
+    \begin{equation*}
+        G(p, m) = \frac{1}{2\sqrt{2\pi}\sigma}\int_{0}^{3} e^{-\frac{(x-a)^2}{2\sigma^2}} \dd x,
+    \end{equation*}
+    \begin{align*}
+        L(a, \sigma) &= \prod_{i=1}^{n} \left(\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-a)^2}{2\sigma^2}}\right)^{obs_i} 
+        \left(\frac{1}{2\sqrt{2\pi}\sigma}\int_{0}^{3} e^{-\frac{(x-a)^2}{2\sigma^2}} \dd x\right)^{1 - obs_i} = \\ 
+                    &= \left(\frac13\right)^{n-k}\left(\frac{1}{\sqrt{2\pi}\sigma}\right)^n e^{-\sum_{obs_i}\frac{(x_i - a)^2}{2\sigma^2}}
+    \end{align*}
+    Функция правдоподобия уже стала настолько сложной, что даже взятие производной затруднительно. Поэтому здесь оценка параметров является препятствием даже для численных методов.
+    
+    Посмотрим, какими методами можно найти значения параметров проще.
